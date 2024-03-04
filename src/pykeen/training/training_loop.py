@@ -673,8 +673,18 @@ class TrainingLoop(Generic[SampleType, BatchType], ABC):
 
         logger.debug(f"using stopper: {stopper}")
 
+        # Filter the triples to include only those of the desired relation type
+        filtered_triples = [
+        triple for triple in original_triples_factory.triples
+        if triple[1] == indication]
+
+        # Create a new triples factory from the filtered triples
+        subsetted_triples_factory = CoreTriplesFactory(filtered_triples)
+
+        # Replace triples_factory with relationsubset
         train_data_loader = self._create_training_data_loader(
-            triples_factory,
+            subsetted_triples_factory,
+            # triples_factory,
             batch_size=batch_size,
             drop_last=drop_last,
             num_workers=num_workers,
