@@ -676,7 +676,7 @@ class TrainingLoop(Generic[SampleType, BatchType], ABC):
         # Filter the triples to include only those of the desired relation type
         filtered_triples = [
         triple for triple in triples_factory.triples
-        if triple[1] == indication]
+        if triple[1] == 'indication']
 
         # Create a new triples factory from the filtered triples
         subsetted_triples_factory = CoreTriplesFactory(filtered_triples)
