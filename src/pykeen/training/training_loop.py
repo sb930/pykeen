@@ -678,8 +678,23 @@ class TrainingLoop(Generic[SampleType, BatchType], ABC):
         triple for triple in triples_factory.triples
         if triple[1] == 'indication']
 
+        # Convert filtered_triples to a tensor if it's not already
+        filtered_triples_tensor = torch.as_tensor(filtered_triples, dtype=torch.long)
+
+        # Determine the unique entities in the filtered triples
+        unique_entities = set(filtered_triples[:, 0]).union(filtered_triples[:, 2])
+        num_entities_filtered = len(unique_entities)
+
+        # Using 1 filtered relation
+        num_relations_filtered = 1
+
         # Create a new triples factory from the filtered triples
-        subsetted_triples_factory = CoreTriplesFactory(filtered_triples)
+        subsetted_triples_factory = CoreTriplesFactory(
+            mapped_triples=filtered_triples,
+            num_entities=num_entities_filtered,
+            num_relations=num_relations_filtered
+            )
+
 
         # Replace triples_factory with relationsubset
         train_data_loader = self._create_training_data_loader(
